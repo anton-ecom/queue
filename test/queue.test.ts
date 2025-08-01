@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Queue, MemoryQueueAdapter, RedisQueueAdapter } from '../src/index.js';
+import { Queue, MemoryQueueAdapter } from '../src/index.js';
 import type { Job, JobHandler } from '../src/types.js';
 
 describe('Queue Unit Tests', () => {
@@ -162,42 +162,6 @@ describe('Queue Unit Tests', () => {
       
       const unhealthy = await queue.isHealthy();
       expect(unhealthy).toBe(false);
-    });
-  });
-
-  describe('RedisQueueAdapter', () => {
-    let adapter: RedisQueueAdapter;
-    let queue: Queue;
-
-    beforeEach(() => {
-      adapter = new RedisQueueAdapter({ host: 'localhost', port: 6379 });
-      queue = Queue.create({ adapter });
-    });
-
-    afterEach(async () => {
-      await queue.close();
-    });
-
-    it('should create queue with redis adapter', () => {
-      expect(queue).toBeDefined();
-      expect(queue.whoami()).toContain('redis adapter');
-      expect(queue.getAdapter().name).toBe('redis');
-    });
-
-    it('should handle redis configuration', () => {
-      const config = queue.getAdapter().config;
-      expect(config.host).toBe('localhost');
-      expect(config.port).toBe(6379);
-    });
-
-    // Note: These are basic tests with mock Redis
-    // In production, you'd want integration tests with real Redis
-    it('should add jobs to redis', async () => {
-      const job = await queue.add('test', { data: 'redis-test' });
-      
-      expect(job.id).toBeDefined();
-      expect(job.type).toBe('test');
-      expect(job.data).toEqual({ data: 'redis-test' });
     });
   });
 

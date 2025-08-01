@@ -1,6 +1,6 @@
 {
   "name": "@synet/queue",
-  "version": "1.0.0",
+  "version": "0.0.2-dev.0",
   "description": "Job queue operations with adapter-first architecture - Memory, Redis, and custom adapters with Unit Architecture integration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

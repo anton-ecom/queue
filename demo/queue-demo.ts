@@ -6,7 +6,7 @@
  * teaching/learning paradigm.
  */
 
-import { Queue, MemoryQueueAdapter, RedisQueueAdapter } from '../src/index.js';
+import { Queue, MemoryQueueAdapter } from '../src/index.js';
 import type { Job } from '../src/types.js';
 
 async function main() {
@@ -63,41 +63,6 @@ async function main() {
   console.log('📊 Final stats:', await memoryQueue.getStats());
   console.log('');
 
-  // Demo 2: Redis Queue (Mock)
-  console.log('🗄️  Redis Queue Demo');
-  console.log('==================');
-  
-  const redisAdapter = new RedisQueueAdapter({ 
-    host: 'localhost', 
-    port: 6379,
-    prefix: 'demo'
-  });
-  const redisQueue = Queue.create({ 
-    adapter: redisAdapter,
-    description: 'Demo Redis queue for production scaling'
-  });
-
-  console.log('✅ Redis queue created:', redisQueue.whoami());
-  console.log('⚙️  Redis config:', redisQueue.getAdapter().config);
-  
-  // Set up processor
-  redisQueue.process('data-processing', async (job: Job) => {
-    console.log(`🔄 Processing data job ${job.id}:`, job.data);
-    await new Promise(resolve => setTimeout(resolve, 150));
-    console.log(`✅ Data processed for batch ${job.data.batchId}`);
-  });
-
-  // Add jobs
-  await redisQueue.add('data-processing', { batchId: 'batch-001', records: 1000 });
-  await redisQueue.add('data-processing', { batchId: 'batch-002', records: 500 });
-
-  console.log('📊 Redis stats:', await redisQueue.getStats());
-
-  // Wait for processing
-  await new Promise(resolve => setTimeout(resolve, 400));
-  
-  console.log('📊 Redis final stats:', await redisQueue.getStats());
-  console.log('');
 
   // Demo 3: Unit Architecture - Teaching/Learning
   console.log('🧠 Unit Architecture Demo');
@@ -168,7 +133,6 @@ async function main() {
 
   // Cleanup
   await memoryQueue.close();
-  await redisQueue.close();
   
   console.log('🎉 Demo completed successfully!');
 }
